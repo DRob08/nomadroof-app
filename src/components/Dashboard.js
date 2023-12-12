@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { Container, Row, Col, Alert, Card, Form, Button } from 'react-bootstrap';
 import AuthChecker from './AuthChecker';
-import { checkAuthentication } from '../api/axios'; // Adjust the path
+import { checkAuthentication } from '../api/axios';
 
 const Dashboard = ({ logged_in_status }) => {
   const [emailNotAuthenticated, setEmailNotAuthenticated] = useState(false);
+  const [userDetails, setUserDetails] = useState({});
 
   useEffect(() => {
     const checkEmailAuthentication = async () => {
@@ -14,6 +16,14 @@ const Dashboard = ({ logged_in_status }) => {
         // Check if confirmation_token indicates email not authenticated
         const isEmailNotAuthenticated = user.confirmation_token !== null;
         setEmailNotAuthenticated(isEmailNotAuthenticated);
+
+        // Set user details
+        setUserDetails({
+          firstName: user.first_name,
+          lastName: user.last_name,
+          country: user.country_of_origin,
+          email: user.email,
+        });
       } catch (error) {
         console.error('Error checking email authentication:', error);
       }
@@ -23,32 +33,56 @@ const Dashboard = ({ logged_in_status }) => {
   }, []);
 
   return (
-    <div>
-      <h1>Dashboard</h1>
+    <Container fluid>
+      <Row>
+        <Col sm={3} style={{ background: '#f0f0f0', padding: '20px' }}>
+          <Card>
+            <Card.Body>
+              <Card.Title>Sidebar</Card.Title>
+              <Card.Text>
+                {/* Add more sidebar content as needed */}
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
 
-      {/* Sidebar */}
-      <div style={{ width: '200px', background: '#f0f0f0', padding: '20px', boxSizing: 'border-box' }}>
-        <p>Sidebar Content</p>
-        {/* Add more sidebar content as needed */}
-      </div>
+        <Col sm={9} style={{ padding: '20px' }}>
+          <h1>Dashboard</h1>
 
-      {/* Main Content */}
-      <div style={{ marginLeft: '220px', padding: '20px', boxSizing: 'border-box' }}>
-        <h2>Main Content</h2>
-        <p>This is the main content of the dashboard.</p>
+          {/* Display message if email not authenticated */}
+          {emailNotAuthenticated && (
+            <Alert variant="warning">
+              Your email is not yet authenticated. Please check your email and confirm your account.
+            </Alert>
+          )}
 
-        {/* Display message if email not authenticated */}
-        {emailNotAuthenticated && (
-          <div className="alert alert-warning" role="alert">
-            Your email is not yet authenticated. Please check your email and confirm your account.
-          </div>
-        )}
+          <Card>
+            <Card.Body>
+              <Card.Title>Main Content</Card.Title>
+              <Card.Text>This is the main content of the dashboard.</Card.Text>
 
-        {/* Add more main content as needed */}
-        
-        <p>Logged In: {logged_in_status ? 'Yes' : 'No'}</p>
-      </div>
-    </div>
+              {/* Display user details */}
+              <p>Logged In: {logged_in_status ? 'Yes' : 'No'}</p>
+              <p>First Name: {userDetails.firstName}</p>
+              <p>Last Name: {userDetails.lastName}</p>
+              <p>Country: {userDetails.country}</p>
+              <p>Email: {userDetails.email}</p>
+
+              {/* Profile Image Upload Form */}
+              <Form>
+                <Form.Group controlId="formFile" className="mb-3">
+                  <Form.Label>Upload Profile Image</Form.Label>
+                  <Form.Control type="file" />
+                </Form.Group>
+                <Button variant="primary" type="submit">
+                  Submit
+                </Button>
+              </Form>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 
