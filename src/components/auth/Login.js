@@ -21,7 +21,7 @@ const Login = (props) => {
 
       const response = await loginUser(userData);
 
-      console.log('Login successful:', response);
+      //console.log('Login successful:', response);
 
      /*  if (response.status === 'success') {
         onLoginSuccess(response.data);

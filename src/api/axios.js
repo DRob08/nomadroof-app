@@ -76,5 +76,25 @@ export const checkEmailAvailability = async (email) => {
       throw error;
     }
   };
+
+
+  export const updateUser = async (userData) => {
+    try {
+      console.log('Updating user with data:', userData);
+  
+      const response = await api.put('/users', { user: userData }, { withCredentials: true });
+  
+      console.log('Update user response:', response.data);
+  
+      return response.data;
+    } catch (error) {
+      console.error('Error updating user:', error.response ? error.response.data : error.message);
+      throw error;
+    }
+  };
+  
+  
+  
+  
   
 

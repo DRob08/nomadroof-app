@@ -28,7 +28,7 @@ const Registration = ({ onRegistrationSuccess }) => {
 
       const response = await registerUser(userData);
 
-      console.log('Registration successful:', response);
+      //console.log('Registration successful:', response);
 
       if (response.status === 'created') {
         onRegistrationSuccess(response.user);

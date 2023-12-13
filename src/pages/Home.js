@@ -13,7 +13,7 @@ const Home = ({ handleLogin, user, logged_in_status, handleLogout })  => {
   const navigate = useNavigate();
   // Function to handle registration success
   const handleAuthSuccess = (userData) => {
-    console.log('Registration success in Home:', userData);
+    
    
     // Call the handleLogin function to update login status and user data
     handleLogin(userData);

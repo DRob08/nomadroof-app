@@ -55,19 +55,19 @@ const App = () => {
     try {
       const response = await checkLoginStatus();
       // console.log('fetchLoginStatus -> Login status response:', response);
-      console.log('fetchLoginStatus -> logged_in:', response.logged_in);
-      console.log('fetchLoginStatus -> userLoggedInStatus:', userLoggedInStatus);
+    //   console.log('fetchLoginStatus -> logged_in:', response.logged_in);
+    //   console.log('fetchLoginStatus -> userLoggedInStatus:', userLoggedInStatus);
   
       // Handle the response as needed, e.g., update user data and login status
       if (response.logged_in && !userLoggedInStatus) {
         setUser(response.user);
         setUserLoggedInStatus(true);
-        console.log('fetchLoginStatus -> User logged in:', response.user);
+        //console.log('fetchLoginStatus -> User logged in:', response.user);
       } else if (!response.logged_in && userLoggedInStatus) {
         // If the actual login status is false, but state says user is logged in, update the state
         setUser(null);
         setUserLoggedInStatus(false);
-        console.log('fetchLoginStatus -> Clearing login variables');
+        //console.log('fetchLoginStatus -> Clearing login variables');
       }
     } catch (error) {
       console.error('Error checking login status:', error);
