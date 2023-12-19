@@ -92,6 +92,24 @@ export const checkEmailAvailability = async (email) => {
       throw error;
     }
   };
+
+  export const fetchCategories = async () => {
+    try {
+      const response = await api.get('/property_categories');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  export const createProperty = async (propertyData) => {
+    try {
+      const response = await api.post('/properties', { property: propertyData }, { withCredentials: true });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
   
   
   

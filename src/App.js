@@ -9,6 +9,7 @@ import AuthPage from './pages/AuthPage';
 import {  checkLoginStatus } from './api/axios';
 import Navbar from './components/common/Navbar'; 
 import EmailConfirmationPage from './pages/EmailConfirmationPage'; 
+import AddPropertyPage from './pages/AddPropertyPage';
 
 
 /* function App() {
@@ -96,9 +97,10 @@ const App = () => {
             path="/"
             element={<Home handleLogin={handleLogin} handleLogout={handleLogout} user={user} logged_in_status={userLoggedInStatus} />}
           />
-          <Route path="/dashboard" element={<Dashboard logged_in_status={userLoggedInStatus} />} />
+          <Route path="/dashboard" element={<Dashboard logged_in_status={userLoggedInStatus} user={user} />} />
           <Route path="/auth/*" element={<AuthPage handleLogin={handleLogin} />} />
           <Route path="/confirm-email/:token" element={<EmailConfirmationPage />} />
+          <Route path="/add-property" element={<AddPropertyPage />} />
         </Routes>
         
       
