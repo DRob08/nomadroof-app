@@ -104,9 +104,17 @@ export const checkEmailAvailability = async (email) => {
 
   export const createProperty = async (propertyData) => {
     try {
+      console.log('Sending POST request to /properties');
+      console.log('Request data:', propertyData);
+  
       const response = await api.post('/properties', { property: propertyData }, { withCredentials: true });
+
+  
+      console.log('Response data:', response.data);
+  
       return response.data;
     } catch (error) {
+      console.error('Error in createProperty:', error);
       throw error;
     }
   };

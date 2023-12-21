@@ -1,8 +1,9 @@
+// PropertyDetails.js
 import React, { useState, useEffect } from 'react';
 import { Form, Button } from 'react-bootstrap';
-import { fetchCategories } from '../api/axios';
+import { fetchCategories, createProperty } from '../api/axios';
 
-const PropertyDetails = ({ onUpdate }) => {
+const PropertyDetails = ({ onNext, onSave }) => {
   const [property, setProperty] = useState({
     name: '',
     description: '',
@@ -30,6 +31,49 @@ const PropertyDetails = ({ onUpdate }) => {
       [e.target.name]: e.target.value,
     });
   };
+
+  const handleSave = async () => {
+    // Validate required fields
+    if (!property.name || !property.description || !property.cat_property_id) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+  
+    try {
+      // Make the API call to create a new property
+      const response = await createProperty(property);
+      console.log('Response:', response);
+  
+      // Check the success field to determine success
+      if (response && response.success) {
+        const createdProperty = response.property;
+        console.log('Property created successfully!', createdProperty);
+  
+        // Additional logic for saving data without proceeding to the next step
+        onSave();
+  
+        // Move to the next step or handle the success as needed
+        onNext();
+      } else {
+        // Handle unsuccessful response and validation errors
+        if (response && response.errors) {
+          const errors = response.errors;
+          // Handle validation errors, e.g., display them to the user
+          console.error('Validation errors:', errors);
+          alert(`Validation errors: ${errors.join(', ')}`);
+        } else {
+          // Handle other errors
+          alert('Error creating property. Please try again.');
+        }
+      }
+    } catch (error) {
+      console.error('Error creating property:', error);
+      // Handle errors as needed
+      alert('Error creating property. Please try again.');
+    }
+  };
+  
+  
 
   return (
     <div style={{ marginBottom: '20px' }}>
@@ -76,7 +120,7 @@ const PropertyDetails = ({ onUpdate }) => {
         </Form.Group>
 
         <div style={{ marginTop: '10px' }}>
-          <Button variant="success" onClick={() => onUpdate(property)}>
+          <Button variant="success" onClick={handleSave}>
             Save
           </Button>
         </div>

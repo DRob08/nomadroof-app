@@ -33,7 +33,6 @@ const AddPropertyPage = () => {
       console.log('Property created successfully!', response);
 
       // Add additional logic if needed
-
     } catch (error) {
       console.error('Error creating property:', error);
       // Handle errors as needed
@@ -45,17 +44,23 @@ const AddPropertyPage = () => {
     setPropertyData((prevData) => ({ ...prevData, ...updatedData }));
   };
 
+  const handleSave = () => {
+    // Additional logic for saving data without proceeding to the next step
+    console.log('Saving data without moving to the next step:', propertyData);
+  };
+
   return (
     <Container fluid>
       <Col sm={8} className="mx-auto" style={{ padding: '20px', boxSizing: 'border-box', textAlign: 'center' }}>
         <h2 style={{ marginBottom: '20px' }}>Add New Property</h2>
 
-        {/* Render the components based on the current step */}
-        {step === 1 && <PropertyDetails onNext={handleNext} onUpdate={handleUpdate} />}
-        {step === 2 && <LocationDetails onPrev={handlePrev} onNext={handleNext} onUpdate={handleUpdate} />}
-        {step === 3 && <ImageUpload onPrev={handlePrev} onNext={handleNext} onUpdate={handleUpdate} />}
-        {step === 4 && <AvailabilityDetails onPrev={handlePrev} onFinish={handleFinish} onUpdate={handleUpdate} />}
-
+        {/* Render all steps and conditionally show/hide based on the current step */}
+        {step === 1 && <PropertyDetails onNext={handleNext} onSave={handleSave} onUpdate={handleUpdate} />}
+        {step === 2 && <LocationDetails onPrev={handlePrev} onNext={handleNext} onSave={handleSave} onUpdate={handleUpdate} />}
+        {/* Add other steps similarly */}
+        {step === 3 && <ImageUpload onPrev={handlePrev} onNext={handleNext} onSave={handleSave} onUpdate={handleUpdate} />}
+        {step === 4 && <AvailabilityDetails onPrev={handlePrev} onFinish={handleFinish} onSave={handleSave} onUpdate={handleUpdate} />}
+        
         {/* Render navigation buttons */}
         {step !== 1 && (
           <Button variant="outline-primary" onClick={handlePrev} style={{ marginRight: '10px' }}>
