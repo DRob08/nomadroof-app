@@ -6,6 +6,7 @@ import LocationDetails from '../components/LocationDetails';
 import ImageUpload from '../components/ImageUpload';
 import AvailabilityDetails from '../components/AvailabilityDetails';
 import { createProperty } from '../api/axios'; // Update this path
+import { PropertyProvider } from '../contexts/PropertyContext'; // Update the path
 
 const AddPropertyPage = () => {
   const [step, setStep] = useState(1);
@@ -13,6 +14,15 @@ const AddPropertyPage = () => {
     name: '',
     description: '',
     cat_property_id: '',
+    size: '',
+    bedrooms: 0,
+    bathrooms: 0,
+    rooms: 0,
+    monthly_price: 0,
+    city_fees: 0.00,
+    cleaning_fees: 0.00,
+    min_months_booking: 0,
+    price_per_extra_guest: 0.00,
     // Add other fields as needed
   });
 
@@ -50,34 +60,36 @@ const AddPropertyPage = () => {
   };
 
   return (
-    <Container fluid>
-      <Col sm={8} className="mx-auto" style={{ padding: '20px', boxSizing: 'border-box', textAlign: 'center' }}>
-        <h2 style={{ marginBottom: '20px' }}>Add New Property</h2>
+    <PropertyProvider>
+      <Container fluid>
+        <Col sm={8} className="mx-auto" style={{ padding: '20px', boxSizing: 'border-box', textAlign: 'center' }}>
+          <h2 style={{ marginBottom: '20px' }}>Add New Property</h2>
 
-        {/* Render all steps and conditionally show/hide based on the current step */}
+          {/* Render all steps and conditionally show/hide based on the current step */}
         {step === 1 && <PropertyDetails onNext={handleNext} onSave={handleSave} onUpdate={handleUpdate} />}
         {step === 2 && <LocationDetails onPrev={handlePrev} onNext={handleNext} onSave={handleSave} onUpdate={handleUpdate} />}
-        {/* Add other steps similarly */}
+          {/* Add other steps similarly */}
         {step === 3 && <ImageUpload onPrev={handlePrev} onNext={handleNext} onSave={handleSave} onUpdate={handleUpdate} />}
         {step === 4 && <AvailabilityDetails onPrev={handlePrev} onFinish={handleFinish} onSave={handleSave} onUpdate={handleUpdate} />}
-        
-        {/* Render navigation buttons */}
-        {step !== 1 && (
-          <Button variant="outline-primary" onClick={handlePrev} style={{ marginRight: '10px' }}>
-            Previous
-          </Button>
-        )}
-        {step !== 4 ? (
-          <Button variant="primary" onClick={handleNext}>
-            Next
-          </Button>
-        ) : (
-          <Button variant="success" onClick={handleFinish}>
-            Finish
-          </Button>
-        )}
-      </Col>
-    </Container>
+
+          {/* Render navigation buttons */}
+          {step !== 1 && (
+            <Button variant="outline-primary" onClick={handlePrev} style={{ marginRight: '10px' }}>
+              Previous
+            </Button>
+          )}
+          {step !== 4 ? (
+            <Button variant="primary" onClick={handleNext}>
+              Next
+            </Button>
+          ) : (
+            <Button variant="success" onClick={handleFinish}>
+              Finish
+            </Button>
+          )}
+        </Col>
+      </Container>
+    </PropertyProvider>
   );
 };
 

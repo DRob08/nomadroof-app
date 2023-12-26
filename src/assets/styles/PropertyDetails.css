@@ -1,0 +1,41 @@
+/* PropertyDetails.css */
+
+.property-details-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .section-heading {
+    margin-bottom: 20px;
+  }
+  
+  .message-container {
+    margin-bottom: 20px;
+  }
+  
+  .success-message {
+    color: green;
+  }
+  
+  .button-container {
+    margin-top: 20px;
+  }
+  
+  .form-row {
+    margin-bottom: 20px;
+  }
+  
+  .form-column {
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+  
+  @media (max-width: 767px) {
+    .form-column {
+      padding-right: 0;
+      padding-left: 0;
+      margin-bottom: 20px;
+    }
+  }
+  

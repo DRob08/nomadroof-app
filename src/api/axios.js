@@ -104,13 +104,13 @@ export const checkEmailAvailability = async (email) => {
 
   export const createProperty = async (propertyData) => {
     try {
-      console.log('Sending POST request to /properties');
+      console.log('Sending createProperty POST request to /properties');
       console.log('Request data:', propertyData);
   
       const response = await api.post('/properties', { property: propertyData }, { withCredentials: true });
 
   
-      console.log('Response data:', response.data);
+
   
       return response.data;
     } catch (error) {
@@ -119,6 +119,18 @@ export const checkEmailAvailability = async (email) => {
     }
   };
   
+  export const updateProperty = async (propertyId, propertyData) => {
+    try {
+      console.log(`Sending updateProperty PUT request to /properties/${propertyId}`);
+      console.log('Property data params:', propertyData);
+      const response = await api.put(`/properties/${propertyId}`, { property: propertyData }, { withCredentials: true });
+  
+      return response.data;
+    } catch (error) {
+      console.error('Error in updateProperty:', error);
+      throw error;
+    }
+  };
   
   
   
