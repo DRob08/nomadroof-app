@@ -3,9 +3,9 @@
 import axios from 'axios';
 
 export const api = axios.create({
-  baseURL: 'http://localhost:3000',
+  //baseURL: 'http://localhost:3000',
   // Uncomment the following line if you have an environment variable set
-  // baseURL: process.env.REACT_APP_URL_QCERT_API,
+  baseURL: process.env.REACT_APP_URL_QCERT_API,
 });
 
 export const registerUser = async (userData) => {
@@ -128,6 +128,15 @@ export const checkEmailAvailability = async (email) => {
       return response.data;
     } catch (error) {
       console.error('Error in updateProperty:', error);
+      throw error;
+    }
+  };
+
+  export const fetchCountries = async () => {
+    try {
+      const response = await api.get('https://restcountries.com/v3.1/all');
+      return response.data;
+    } catch (error) {
       throw error;
     }
   };

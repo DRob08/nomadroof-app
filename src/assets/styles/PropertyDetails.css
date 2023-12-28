@@ -38,4 +38,8 @@
       margin-bottom: 20px;
     }
   }
+
+  .map-container {
+    height: 400px; /* Set the height to your desired value */
+  }
   
