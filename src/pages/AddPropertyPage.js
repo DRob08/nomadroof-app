@@ -7,6 +7,7 @@ import ImageUpload from '../components/ImageUpload';
 import AvailabilityDetails from '../components/AvailabilityDetails';
 import { createProperty } from '../api/axios'; // Update this path
 import { PropertyProvider } from '../contexts/PropertyContext'; // Update the path
+import AuthChecker from '../components/AuthChecker';
 
 const AddPropertyPage = () => {
   const [step, setStep] = useState(1);
@@ -93,4 +94,4 @@ const AddPropertyPage = () => {
   );
 };
 
-export default AddPropertyPage;
+export default AuthChecker(AddPropertyPage);

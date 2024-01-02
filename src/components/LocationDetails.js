@@ -3,20 +3,19 @@ import { Form, Button, Alert, Row, Col } from 'react-bootstrap';
 import { usePropertyContext } from '../contexts/PropertyContext';
 import '../assets/styles/PropertyDetails.css';
 import { loadGoogleMapsScript, getLatLngFromAddress } from '../utils/googleMaps';
-import { fetchCountries,  createProperty,
-    updateProperty } from '../api/axios';
+import { fetchCountries, createProperty, updateProperty } from '../api/axios';
 
 const LocationDetails = ({ onPrev, onNext }) => {
   const {
     propertyState,
     setPropertyField,
     setPropertyId,
-    resetProperty, // Import the resetProperty action
+    resetProperty,
   } = usePropertyContext();
 
   const {
     property_id,
-    address = '',
+    property_address = '',
     city = '',
     country = '',
     zip_code = '',
@@ -37,7 +36,9 @@ const LocationDetails = ({ onPrev, onNext }) => {
     const loadCountries = async () => {
       try {
         const countriesData = await fetchCountries();
-        const sortedCountries = countriesData.sort((a, b) => a.name.common.localeCompare(b.name.common));
+        const sortedCountries = countriesData.sort((a, b) =>
+          a.name.common.localeCompare(b.name.common)
+        );
         setCountries(sortedCountries);
       } catch (error) {
         console.error('Error loading countries:', error);
@@ -52,7 +53,9 @@ const LocationDetails = ({ onPrev, onNext }) => {
       try {
         const google = await loadGoogleMapsScript();
 
-        const autocomplete = new google.maps.places.Autocomplete(autocompleteRef.current);
+        const autocomplete = new google.maps.places.Autocomplete(
+          autocompleteRef.current
+        );
 
         autocomplete.addListener('place_changed', () => {
           const place = autocomplete.getPlace();
@@ -60,6 +63,93 @@ const LocationDetails = ({ onPrev, onNext }) => {
             console.error('Place details not found for input:', place.name);
             return;
           }
+
+          console.log('Place object:', place.address_components);
+
+          // Get the city, country, and zip code components
+
+          const streetNumberComponent = place.address_components.find((component) =>
+            component.types.includes('street_number')
+          );
+
+          const routeComponent = place.address_components.find((component) =>
+            component.types.includes('route')
+          );
+
+          const neighborhoodComponent = place.address_components.find((component) =>
+            component.types.includes('neighborhood')
+          );
+
+          const cityComponent = place.address_components.find((component) =>
+            component.types.includes('locality')
+          );
+          const countryComponent = place.address_components.find(
+            (component) => component.types.includes('country')
+          );
+          const zipCodeComponent = place.address_components.find(
+            (component) => component.types.includes('postal_code')
+          );
+
+
+          //console.log('Neighborhood: ', neighborhoodComponent?.long_name || '');
+
+          const components = {
+            streetNumber: place.address_components.find((component) =>
+              component.types.includes('street_number')
+            ),
+            route: place.address_components.find((component) =>
+              component.types.includes('route')
+            ),
+            neighborhood: place.address_components.find((component) =>
+              component.types.includes('neighborhood')
+            ),
+            city: place.address_components.find((component) =>
+              component.types.includes('locality')
+            ),
+            county: place.address_components.find((component) =>
+              component.types.includes('administrative_area_level_2')
+            ),
+            state: place.address_components.find((component) =>
+              component.types.includes('administrative_area_level_1')
+            ),
+            country: place.address_components.find((component) =>
+              component.types.includes('country')
+            ),
+            zipCode: place.address_components.find((component) =>
+              component.types.includes('postal_code')
+            ),
+          };
+          
+          // Now you can access specific components like:
+          const streetNumber = components.streetNumber?.long_name || '';
+          const route = components.route?.long_name || '';
+          const city = components.city?.long_name || '';
+          const country = components.country?.long_name || '';
+          const zipCode = components.zipCode?.long_name || '';
+          const county = components.county?.long_name || '';
+          const neighborhood = components.neighborhood?.long_name || '';
+          // ... and so on for other components
+
+           // Console log the properties
+            console.log('Street Number:', streetNumber);
+            console.log('Route:', route);
+            console.log('City:', city);
+            console.log('Country:', country);
+            console.log('Zip Code:', zipCode);
+            console.log('Neighborhood:', neighborhood);
+            console.log('County:', county);
+          
+
+          // Update the corresponding form fields
+          setPropertyField('city', cityComponent ? cityComponent.long_name : '');
+          setPropertyField(
+            'country',
+            countryComponent ? countryComponent.long_name : ''
+          );
+          setPropertyField(
+            'zip_code',
+            zipCodeComponent ? zipCodeComponent.long_name : ''
+          );
 
           const { lat, lng } = place.geometry.location;
           setPropertyField('latitude', lat());
@@ -73,7 +163,7 @@ const LocationDetails = ({ onPrev, onNext }) => {
           zoom: 15,
         });
 
-        console.log('Map object:', mapRef.current);
+       // console.log('Map object:', mapRef.current);
 
         new google.maps.Marker({
           position: { lat: latitude ?? 25.7617, lng: longitude ?? -80.1918 },
@@ -88,16 +178,22 @@ const LocationDetails = ({ onPrev, onNext }) => {
   }, [setPropertyField, latitude, longitude]);
 
   const handleAddressChange = async (address) => {
-    setPropertyField('address', address);
+    setPropertyField('property_address', address);
+    
 
     try {
-      const { lat, lng } = await getLatLngFromAddress(address);
-      console.log('Latitude:', lat);
-      console.log('Longitude:', lng);
-      setPropertyField('latitude', lat);
-      setPropertyField('longitude', lng);
-      mapRef.current.setCenter({ lat, lng });
-      mapRef.current.setZoom(15);
+      if (address.length > 0) {
+        const { lat, lng } = await getLatLngFromAddress(address);
+        console.log('Latitude:', lat);
+        console.log('Longitude:', lng);
+        setPropertyField('latitude', lat);
+        setPropertyField('longitude', lng);
+        setPropertyField('property_address', address);
+        mapRef.current.setCenter({ lat, lng });
+        mapRef.current.setZoom(15);
+      } else {
+        console.warn('Address is empty. Skipping geocoding.');
+      }
     } catch (error) {
       console.error('Error getting latitude and longitude:', error);
     }
@@ -112,7 +208,7 @@ const LocationDetails = ({ onPrev, onNext }) => {
     setSaveMessage('');
     setErrorMessage('');
 
-    if (!address || !city || !country || !zip_code) {
+    if (!property_address || !city || !country || !zip_code) {
       setErrorMessage('Please fill in all required fields.');
       setLoading(false);
       return;
@@ -126,21 +222,17 @@ const LocationDetails = ({ onPrev, onNext }) => {
         setSaveMessage('');
       }, 3000);
 
-      // Save property data
       let response;
       if (property_id) {
-        // If property_id exists, it means the property is being updated
         response = await updateProperty(property_id, propertyState);
       } else {
-        // If property_id is null, it means a new property is being created
         response = await createProperty(propertyState);
-        setPropertyId(response.property_id); // Update the property_id in the context
+        setPropertyId(response.property_id);
       }
 
       console.log('Update/Create property response:', response);
 
-      // Reset property state after saving
-      resetProperty();
+      //resetProperty();
 
       onNext();
     } catch (error) {
@@ -169,8 +261,8 @@ const LocationDetails = ({ onPrev, onNext }) => {
               <Form.Control
                 type="text"
                 placeholder="Enter address"
-                name="address"
-                value={address}
+                name="property_address"
+                value={property_address}
                 onChange={(e) => handleInputChange(e)}
                 onBlur={(e) => handleAddressChange(e.target.value)}
                 ref={autocompleteRef}
@@ -193,7 +285,7 @@ const LocationDetails = ({ onPrev, onNext }) => {
             <Form.Group>
               <Form.Label>Country</Form.Label>
               <Form.Control
-                as="select" // Use select for country dropdown
+                as="select"
                 name="country"
                 value={country}
                 onChange={handleInputChange}

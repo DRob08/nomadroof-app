@@ -29,8 +29,8 @@ const initialState = {
   min_months_booking: 0, // Provide a default value (0) instead of null
   extra_price_per_guest: 0.00, // Provide a default value (0.00) instead of null
   verified: false,
-  address:'',
-  zipcode:'',
+  property_address:'',
+  zip_code:'',
   country: '',
   city: '',
 };
